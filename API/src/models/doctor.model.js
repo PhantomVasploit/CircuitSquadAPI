@@ -1,4 +1,5 @@
 const {Schema, default: mongoose} = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const doctorSchema = new Schema({
     firstName: {
@@ -51,6 +52,11 @@ const doctorSchema = new Schema({
         ref: 'hospital',
         required: [true, "Hospital id is required"]
     }
+});
+
+doctorSchema.pre('save', async function(){
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 const Doctor = mongoose.model('doctor', doctorSchema);

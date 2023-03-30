@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/user', (req, res)=>{
-    res.status(200).json({message: 'Dummy data'});
-})
+const {register} = require('../controller/doctor.controller')
+
+router.post('/doctor/register', register);
 
 module.exports = router;
