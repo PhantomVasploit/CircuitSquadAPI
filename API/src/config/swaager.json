@@ -1,0 +1,20 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the API service server for the Web Application built by the Circuit Squad.",
+        "version": "1.0.0",
+        "title": "Circuit Squad API service server for the web-based medical application",
+        "contact": {
+            "name": "Paul Sanga",
+            "email": "paulsanganyamawi@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "127.0.0.1:3000",
+    "basePath": "/api/",
+    "schemes": ["http", "https"],
+    "paths": {}
+}
