@@ -1,0 +1,379 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the API service server for the Web Application built by the Circuit Squad.",
+        "version": "1.0.0",
+        "title": "Circuit Squad API service server for the web-based medical application",
+        "contact": {
+            "name": "Paul Sanga",
+            "email": "paulsanganyamawi@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "127.0.0.1:3000",
+    "basePath": "/nhis/api/",
+    "schemes": ["http", "https"],
+    "paths": {
+
+        "/doctor/register": {
+            "post": {
+                "tags": ["Doctor"],
+                "summary": "Creates a new doctor account",
+                "description": "Takes doctor's details in json format and creates a doctor instance in the database",
+                "operationId": "newDoctorAccount",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Doctor object that needs to be added to the database",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Doctor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Account already exits."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+
+        "/doctor/login": {
+            "post": {
+                "tags": ["Doctor"],
+                "summary": "Allows doctor to consume authorized API endpoints",
+                "operationId": "loginDoctor",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Doctor's login credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DoctorLoginCredentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Incorrect login credentials or unregistered email address."
+                    }
+                }
+            }
+        },
+
+        "/doctor": {
+            "get": {
+                "tags": ["Doctor"],
+                "summary": "Retrieves all doctor accounts details",
+                "operationId": "getDoctorAccounts",
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+
+        "/patient/register": {
+            "post": {
+                "tags": ["Patient"],
+                "summary": "Creates a new patient account",
+                "description": "Takes patient's details in json format and creates a doctor instance in the database",
+                "operationId": "newPatientAccount",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Patient object that needs to be added to the database",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Patient"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Account already exits."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/patient/login": {
+            "post": {
+                "tags": ["Patient"],
+                "summary": "Allows patient to consume authorized API endpoints",
+                "operationId": "LoginDoctor",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Doctor's login credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DoctorLoginCredentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Incorrect login credentials or unregistered email address."
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+
+        "APIResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+
+        "Doctor": {
+            "type": "object",
+            "required": ["firstName", "lastName", "email", "phoneNumber", "address", "licenseNumber", "specialization", "password"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated doctor's identification number",
+                    "uniqueItems": true,
+                    "example": "47"
+                },
+                "firstName": {
+                    "type": "string",
+                    "description": "This is the doctor's first name",
+                    "example": "Paul"
+                },
+                "lastName": {
+                    "type": "string",
+                    "description": "This is the doctor's last name",
+                    "example": "Sanga"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the doctor's email address",
+                    "uniqueItems": true,
+                    "example": "paulvasgit99@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "This is the doctor's passkey that would be used during authentication process",
+                    "example": "abc1234"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the doctor's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255894"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the doctor's residential address",
+                    "example": "MSA 80107"                    
+                },
+                "licenseNumber": {
+                    "type": "string",
+                    "description": "This is the doctor's medical license number",
+                    "example": "S13/03150/18"
+                },
+                "specialization": {
+                    "type": "string",
+                    "description": "This is the doctor's medical specilization field",
+                    "example": "Surgeon"
+                }  
+            }
+        },
+
+        "Patient": {
+            "type": "object",
+            "required": ["firstName", "lastName", "email", "phoneNumber", "address", "dateOfBirth", "gender", "password", "healthCondtion", "insuranceMembershipNumber"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated doctor's identification number",
+                    "uniqueItems": true,
+                    "example": "47"
+                },
+                "firstName": {
+                    "type": "string",
+                    "description": "This is the patient's first name",
+                    "example": "John"
+                },
+                "lastName": {
+                    "type": "string",
+                    "description": "This is the patient's last name",
+                    "example": "Wick"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the patient's email address",
+                    "uniqueItems": true,
+                    "example": "vas@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "This is the patient's passkey that would be used during authentication process",
+                    "example": "abc1234"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the patient's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255894"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the patient's residential address",
+                    "example": "MSA 80107"                    
+                },
+                "dateOfBirth": {
+                    "type": "date",
+                    "description": "This is the patient's date of birth",
+                    "example": "1999-07-23"
+                },
+                "gender": {
+                    "type": "string",
+                    "description": "This is the patient's gender",
+                    "example": "Male"
+                },
+                "healthCondtion": {
+                    "type": "string",
+                    "description": "This is the patient's health condition",
+                    "example": "Diabetic"
+                },
+                "insuranceMembershipNumber": {
+                    "type": "string",
+                    "description": "This is the patient's insurance membership number"
+                }  
+            }
+        },
+
+        "UpdateDoctorDetails": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string",
+                    "description": "This is the doctor's first name",
+                    "example": "Phantom"
+                },
+                "lastName": {
+                    "type": "string",
+                    "description": "This is the doctor's last name",
+                    "example": "Vasploit"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the doctor's email address",
+                    "uniqueItems": true,
+                    "example": "Vasploit@gmail.com"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the doctor's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255894"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the doctor's residential address",
+                    "example": "MSA 80107"                    
+                },
+                "licenseNumber": {
+                    "type": "string",
+                    "description": "This is the doctor's medical license number",
+                    "example": "S13/03150/17"
+                }  
+            }
+        },
+
+        "DoctorLoginCredentials":{
+            "type": "object",
+            "required": ["email", "password"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "This is the doctor's email address",
+                "uniqueItems": true,
+                "example": "paulvasgit99@gmail.com"
+              },
+              "password": {
+                "type": "string",
+                "description": "This is the doctor's passkey that would be used during authentication process",
+                "example": "abc1234"
+              }
+            }
+        }
+    },
+    "parameters": {
+        "idParam": {
+            "name": "id",
+            "in": "path",
+            "description": "ID of doctor account",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+        }
+    }
+}

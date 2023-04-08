@@ -9,11 +9,12 @@ require('dotenv').config();
 const routes = require('./routes/routes');
 const logger = require('./config/winston.config');
 const errorLogger = require('./middleware/errorLogger');
-const swaggerDoc = require('./config/swaager.json');
+const swaggerDoc = require('./config/swager.json');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
 require('./config/db.config');
+
 
 app.use(cors());
 app.use(helmet());
@@ -26,7 +27,7 @@ process.on('unhandledRejection', (ex)=>{
     throw ex;
 });
 
-app.use('/api', routes);
+app.use('/nhis/api', routes);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.use(errorLogger);
 
@@ -35,3 +36,5 @@ const server = app.listen(port, ()=>{
     logger.info(`Circuit squad api server service intiated`);
     console.log(`Circuit squad api server service intiated`)
 });
+
+module.exports = server;
