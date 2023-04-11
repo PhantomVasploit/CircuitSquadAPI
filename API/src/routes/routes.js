@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireAuth } = require('../middleware/authentication.middleware');
 const { requireDocotorAuthorization } = require('../middleware/doctor.authorization.middleware');
 const { requireHospitalAuthorization } = require('../middleware/hospital.authorization.middleware');
 const { requireMinistryOfHealthAuthorization } = require('../middleware/ministryOfHealth.authorization.middleware');
@@ -98,17 +97,16 @@ router.post('/doctor/register', registerDoctor);
 router.post('/doctor/login', loginDoctor);
 router.get('/doctor/:id', getDoctor);
 router.get('/doctors', getDoctors);
-
-router.put('/doctor/:id', updateDoctor);
+router.put('/doctor/:id', requireDocotorAuthorization, updateDoctor);
 router.delete('/doctor/:id', deleteDoctor);
 
 //hospital routes
-router.get('/hospitals', getHospitals);
-router.get('/hospital/:id', getHospital);
-router.post('/hospital/register', registerHospital);
+router.get('/hospitals', requireMinistryOfHealthAuthorization, getHospitals);
+router.get('/hospital/:id',  getHospital);
+router.post('/hospital/register/:ministryOfHealthId', registerHospital);
 router.post('/hospital/login', loginHospital);
-router.put('/hospital/:id', updateHospital);
-router.delete('/hospital/:id', deleteHospital);
+router.put('/hospital/:id', requireHospitalAuthorization, updateHospital);
+router.delete('/hospital/:id', requireMinistryOfHealthAuthorization, deleteHospital);
 
 //patient routes
 router.get('/patients', getPatients);

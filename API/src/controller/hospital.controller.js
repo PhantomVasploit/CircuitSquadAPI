@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 
 const Hospital = require('../models/Hospital.model');
 const { createToken } = require('../utils/token');
+const MinistryOfHealth = require('../models/MinistryOfHealth.model');
 
 module.exports.registerHospital = (req, res)=>{
     const {
@@ -12,6 +13,8 @@ module.exports.registerHospital = (req, res)=>{
         password
      } = req.body;
 
+     const ministryOfHealthId = req.params.ministryOfHealthId;
+
      Hospital.findOne({ where: {email} })
      .then((registeredHospital)=>{
         if(!registeredHospital)
@@ -21,7 +24,8 @@ module.exports.registerHospital = (req, res)=>{
                 email,
                 phoneNumber,
                 address,
-                password
+                password,
+                ministryOfHealthId
             })
             .then((hospital)=>{
                 const jwt = createToken({ id: hospital.id, isHospital: hospital.isHospital});
@@ -69,7 +73,14 @@ module.exports.loginHospital = async(req, res)=>{
 
 
 module.exports.getHospitals = (req, res)=>{
-    Hospital.findAll()
+    Hospital.findAll({ 
+        include: [{
+            model: MinistryOfHealth,
+            required: true,
+            attributes: ['name', 'email', 'phoneNumber', 'address']
+        }],
+        attributes: ['name', 'email', 'phoneNumber', 'address']
+    })
     .then((hospitals)=>{
         res.status(200).json({message: 'Fetch successful', hospitals});
     })
@@ -80,7 +91,15 @@ module.exports.getHospitals = (req, res)=>{
 
 module.exports.getHospital = (req, res)=>{
     const id = req.params.id;
-    Hospital.findByPk(id)
+    Hospital.findOne({
+        where: {id},
+        include: [{
+            model: MinistryOfHealth,
+            required: true,
+            attributes: ['name', 'email', 'phoneNumber', 'address']
+        }],
+        attributes: ['name', 'email', 'phoneNumber', 'address']
+    })
     .then((hospital)=>{
         res.status(200).json({message: 'Fetch successful', hospital});
     })
