@@ -12,7 +12,7 @@ module.exports.registerInsuaranceCompany = (req, res)=>{
         {
             InsuaranceCompany.create({ name, email, phoneNumber, address, password })
             .then((insuaranceCompany)=>{
-                const jwt = createToken({id: insuaranceCompany.id, permission: insuaranceCompany.isInsuaranceCompany});
+                const jwt = createToken({id: insuaranceCompany.id, isInsuaranceCompany: insuaranceCompany.isInsuaranceCompany});
                 res.status(201).json({message: 'Insuarance company account created successfully', jwt, insuaranceCompany})
             })
             .catch((e)=>{
@@ -44,7 +44,7 @@ module.exports.loginInsuaranceCompany = async(req, res)=>{
                 res.status(400).json({message: 'Invalid login credentials'})
             }else
             {
-                const jwt = createToken({id: insuaranceCompany.id, permission: insuaranceCompany.isInsuaranceCompany})
+                const jwt = createToken({id: insuaranceCompany.id, isInsuaranceCompany: insuaranceCompany.isInsuaranceCompany})
                 res.status(200).json({message: 'Lgin successful', jwt, insuaranceCompany})
             }
         }

@@ -24,7 +24,7 @@ module.exports.registerHospital = (req, res)=>{
                 password
             })
             .then((hospital)=>{
-                const jwt = createToken({ id: hospital.id, permissions: hospital.isHospital});
+                const jwt = createToken({ id: hospital.id, isHospital: hospital.isHospital});
                 res.status(201).json({message: 'Hospital account created successfully', hospital, jwt});
             })
             .catch((e)=>{
@@ -57,7 +57,7 @@ module.exports.loginHospital = async(req, res)=>{
                 res.status(400).json({message: 'Invalid login credentials'});
             }else
             {
-                const jwt = createToken({id: hospital.id, permissions: hospital.isHospital});
+                const jwt = createToken({id: hospital.id, isHospital: hospital.isHospital});
                 res.status(200).json({message: 'Login successful', hospital, jwt});
             }
         }

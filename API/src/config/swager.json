@@ -86,7 +86,7 @@
             }
         },
 
-        "/doctor": {
+        "/doctors": {
             "get": {
                 "tags": ["Doctor"],
                 "summary": "Retrieves all doctor accounts details",
@@ -145,17 +145,17 @@
             "post": {
                 "tags": ["Patient"],
                 "summary": "Allows patient to consume authorized API endpoints",
-                "operationId": "LoginDoctor",
+                "operationId": "LoginPatient",
                 "consumes": ["application/json"],
                 "produces": ["application/json"],
                 "parameters": [
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "Doctor's login credentials",
+                        "description": "Patient's login credentials",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DoctorLoginCredentials"
+                            "$ref": "#/definitions/PatientLoginCredentials"
                         }
                     }
                 ],
@@ -168,6 +168,26 @@
                     },
                     "400": {
                         "description": "Invalid operation: Incorrect login credentials or unregistered email address."
+                    }
+                }
+            }
+        },
+
+        "/patients": {
+            "get": {
+                "tags": ["Patient"],
+                "summary": "Retrieves all patient accounts details",
+                "operationId": "getPatientAccounts",
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -361,6 +381,23 @@
               "password": {
                 "type": "string",
                 "description": "This is the doctor's passkey that would be used during authentication process",
+                "example": "abc1234"
+              }
+            }
+        },
+        "PatientLoginCredentials":{
+            "type": "object",
+            "required": ["email", "password"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "This is the patient's email address",
+                "uniqueItems": true,
+                "example": "vas@gmail.com"
+              },
+              "password": {
+                "type": "string",
+                "description": "This is the patient's passkey that would be used during authentication process",
                 "example": "abc1234"
               }
             }

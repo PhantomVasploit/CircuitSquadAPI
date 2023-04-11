@@ -1,9 +1,10 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, Model } = require('sequelize');
 
-const sequelize = require('../config/db.config')
+const sequelize = require('../config/db.config');
+const Diagnosis = require('./Diagnosis.model');
 
-const Medication = sequelize.define(
-    "Medication",
+class Medication extends Model{};
+Medication.init(
     {
         id: {
             type: Sequelize.INTEGER,
@@ -26,12 +27,22 @@ const Medication = sequelize.define(
         prescription: {
             type: Sequelize.STRING(255),
             allowNull: false
+        },
+        diagnosisId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: Diagnosis,
+                key: 'id'
+            }
         }
+    },
+    {
+        sequelize,
+        modelName: 'medications'
     }
 );
 
-Medication.associations = models =>{
-    Medication.belongsTo(models.Diagnosis);
-}
+Diagnosis.hasMany(Medication);
+Medication.belongsTo(Diagnosis);
 
 module.exports = Medication;

@@ -1,10 +1,10 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, Model } = require('sequelize');
 const bcrypt = require('bcrypt');
 
 const sequelize = require('../config/db.config');
 
-const InsuaranceCompany = sequelize.define(
-    "InsuranceCompany",
+class InsuaranceCompany extends Model{};
+InsuaranceCompany.init(
     {
         name: {
             type: Sequelize.STRING(255),
@@ -41,6 +41,8 @@ const InsuaranceCompany = sequelize.define(
         }
     },
     {
+        sequelize,
+        modelName: 'insuranceCompany',
         hooks: {
             beforeCreate: async (insuranceCompany)=>{
                 const salt = await bcrypt.genSalt();
@@ -49,7 +51,6 @@ const InsuaranceCompany = sequelize.define(
         },
         freezeTableName: true
     }
-);
-
+)
 
 module.exports = InsuaranceCompany;

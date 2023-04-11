@@ -2,6 +2,9 @@ const bcrypt = require('bcrypt');
 
 const Doctor = require('../models/Doctor.model');
 const { createToken } = require('../utils/token');
+const { Sequelize } = require('sequelize');
+const Appointment = require('../models/Appointment.model');
+
 
 module.exports.registerDoctor = (req, res)=>{
     const {
@@ -20,7 +23,7 @@ module.exports.registerDoctor = (req, res)=>{
         {
             Doctor.create({firstName, lastName, email, phoneNumber, address, licenseNumber, specialization, password})
             .then((doctor)=>{
-                const jwt = createToken({id: doctor.id, permissions: doctor.isDoctor});
+                const jwt = createToken({id: doctor.id, isDoctor: doctor.isDoctor});
                 res.status(201).json({message: 'Doctor account created successfully', doctor, jwt})
             })
             .catch((e)=>{
@@ -51,7 +54,7 @@ module.exports.loginDoctor = async(req, res)=>{
                 res.status(400).json({message: 'Invalid login credentials'});
             }else
             {
-                const jwt = createToken({id: doctor.id, permissions: doctor.isDoctor});
+                const jwt = createToken({id: doctor.id, isDoctor: doctor.isDoctor});
                 res.status(200).json({message: 'Login successful', jwt, doctor});
             }
         }
@@ -115,3 +118,4 @@ module.exports.deleteDoctor = (req, res)=>{
         throw e;
     })
 }
+

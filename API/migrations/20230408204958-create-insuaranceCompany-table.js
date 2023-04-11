@@ -4,7 +4,7 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.createTable(
-      'InsuranceCompany',
+      'insuranceCompany',
       {
         name: {
             type: Sequelize.STRING(255),
@@ -57,6 +57,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    return queryInterface.dropTable('InsuranceCompany');
+    return queryInterface.dropTable('insuranceCompany');
   }
 };

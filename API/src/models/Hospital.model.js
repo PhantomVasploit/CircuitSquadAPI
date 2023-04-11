@@ -1,12 +1,12 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, Model } = require('sequelize');
 const bcrypt = require('bcrypt');
 
 const sequelize = require('../config/db.config');
-const Doctor = require('./Doctor.model');
+const MinistryOfHealth = require('./MinistryOfHealth.model');
 
 
-const Hospital = sequelize.define(
-    "Hospital",
+class Hospital extends Model{};
+Hospital.init(
     {
         id: {
             type: Sequelize.INTEGER,
@@ -40,9 +40,18 @@ const Hospital = sequelize.define(
             type: Sequelize.BOOLEAN,
             defaultValue: true,
             allowNull: false
+        },
+        ministryOfHealthId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: MinistryOfHealth,
+                key: 'id'
+            }
         }
     },
     {
+        sequelize,
+        modelName: 'hospitals',
         hooks: {
             beforeCreate: async (hospital)=>{
                 const salt = await bcrypt.genSalt();
@@ -52,12 +61,7 @@ const Hospital = sequelize.define(
     }
 )
 
-Hospital.associations = (models)=>{
-    Hospital.belongsTo(models.MinistryOfHealth);
-    Hospital.hasMany(models.Doctor);
-    Hospital.hasMany(models.Patient);
-}
-
-
+MinistryOfHealth.hasMany(Hospital);
+Hospital.belongsTo(MinistryOfHealth);
 
 module.exports = Hospital;

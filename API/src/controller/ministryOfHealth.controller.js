@@ -11,7 +11,7 @@ module.exports.registerMinistryOfHealth = (req, res)=>{
         {
             MinistryOfHealth.create({ name, email, phoneNumber, address, password })
             .then((ministryOfHealth)=>{
-                const jwt = createToken({ id: ministryOfHealth.id, permissions: ministryOfHealth.isMinistryOfHealth })
+                const jwt = createToken({ id: ministryOfHealth.id, isMinistryOfHealth: ministryOfHealth.isMinistryOfHealth })
                 res.status(201).json({message: 'Account created successfully', ministryOfHealth, jwt});
             })
             .catch((e)=>{
@@ -43,7 +43,7 @@ module.exports.loginMinistryOfHealth = async(req, res)=>{
                 res.status(400).json({message: 'Invalid login credentails'});
             }else
             {
-                const jwt = createToken({id: ministryOfHealth.id, permissions: ministryOfHealth.isMinistryOfHealth});
+                const jwt = createToken({id: ministryOfHealth.id, isMinistryOfHealth: ministryOfHealth.isMinistryOfHealth});
                 res.status(200).json({message: 'Login successful', jwt, ministryOfHealth});
             }
         }

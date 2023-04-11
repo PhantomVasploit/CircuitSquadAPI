@@ -1,10 +1,10 @@
-const { Sequelize } = require('sequelize')
+const { Sequelize, Model } = require('sequelize')
 const bcrypt = require('bcrypt');
 
 const sequelize = require('../config/db.config');
 
-const MinistryOfHealth = sequelize.define(
-    "MinistryOfHealth",
+class MinistryOfHealth extends Model{};
+MinistryOfHealth.init(
     {
         id: {
             type: Sequelize.INTEGER,
@@ -41,6 +41,8 @@ const MinistryOfHealth = sequelize.define(
         }
     }, 
     {
+        sequelize,
+        modelName: 'ministryOfHealth',
         hooks: {
             beforeCreate: async(ministryOfHealth)=>{
                 const salt = await bcrypt.genSalt();
@@ -49,11 +51,7 @@ const MinistryOfHealth = sequelize.define(
         },
         freezeTableName: true
     }
-);
-
-MinistryOfHealth.associations = function(models){
-    MinistryOfHealth.hasMany(models.Hospital);
-}
+)
 
 module.exports = MinistryOfHealth;
 

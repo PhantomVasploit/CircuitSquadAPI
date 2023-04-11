@@ -1,9 +1,12 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, Model } = require('sequelize');
 
 const sequelize = require('../config/db.config');
+const Patient = require('./Patient.model');
+const Doctor = require('./Doctor.model');
+const Appointment = require('./Appointment.model');
 
-const Diagnosis = sequelize.define(
-    "Diagnosis",
+class Diagnosis extends Model{};
+Diagnosis.init(
     {
         id: {
             type: Sequelize.INTEGER,
@@ -42,17 +45,41 @@ const Diagnosis = sequelize.define(
         bloodGroup: {
             type: Sequelize.STRING(255),
             allowNull: false
+        },
+        patientId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: Patient,
+                key: 'id'
+            }
+        },
+        doctorId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: Doctor,
+                key: 'id'
+            }
+        },
+        appointmentId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: Appointment,
+                key: 'id'
+            }
         }
     },
     {
+        sequelize,
+        modelName: 'diagnosis',
         freezeTableName: true
     }
 );
 
-Diagnosis.associations = models=>{
-    Diagnosis.belongsTo(models.Patient);
-    Diagnosis.hasMany(models.Medication);
-    Diagnosis.belongsTo(models.Diagnosis);
-}
+Diagnosis.belongsTo(Patient);
+Patient.hasMany(Diagnosis);
+Diagnosis.belongsTo(Doctor);
+Doctor.hasMany(Diagnosis);
+Diagnosis.belongsTo(Appointment);
+Appointment.hasMany(Diagnosis);
 
 module.exports = Diagnosis;

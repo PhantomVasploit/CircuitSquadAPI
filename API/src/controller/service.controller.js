@@ -21,7 +21,7 @@ module.exports.getServices = (req, res)=>{
     })
 }
 
-module.exports.getService = (res, res)=>{
+module.exports.getService = (req, res)=>{
     const id = req.params.id;
     Service.findByPk(id)
     .then((service)=>{

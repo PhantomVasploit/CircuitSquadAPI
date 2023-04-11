@@ -35,7 +35,7 @@ module.exports.registerPatient = (req, res)=>{
                 insuranceMembershipNumber
             })
             .then((patient)=>{
-                const jwt = createToken({id: patient.id, permissions: patient.isPatient});
+                const jwt = createToken({id: patient.id, isPatient: patient.isPatient});
                 res.status(201).json({message: 'Patient account created successfully', patient, jwt});
             })
             .catch((e)=>{
@@ -64,7 +64,7 @@ module.exports.loginPatient = async (req, res)=>{
                 res.status(400).json({message: "Invalid login credentials"});
             }else
             {
-                const jwt = createToken({id: patient.id, permissions: patient.isPatient});
+                const jwt = createToken({id: patient.id, isPatient: patient.isPatient});
                 res.status(200).json({message: 'Login successful', jwt, patient});
             }
         }

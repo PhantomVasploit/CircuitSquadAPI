@@ -1,8 +1,10 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize, Model } = require("sequelize");
 const sequelize = require("../config/db.config");
+const Patient = require("./Patient.model");
+const Service = require("./Service.model");
 
-const Payment = sequelize.define(
-    "Payment",
+class Payment extends Model{};
+Payment.init(
     {
         id: {
             type: Sequelize.INTEGER,
@@ -26,16 +28,32 @@ const Payment = sequelize.define(
             type: Sequelize.BOOLEAN,
             allowNull: false,
             defaultValue: false
+        },
+        patientId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: Patient,
+                key: 'id'
+            }
+        },
+        serviceId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: Service,
+                key: 'id'
+            }
         }
     },
     {
+        sequelize,
+        modelName: 'payment',
         freezeTableName: true
     }
-);
+)
 
-Payment.associations = models=>{
-    Payment.belongsTo(models.Patient);
-    Payment.belongsTo(models.Service);
-}
+Payment.belongsTo(Patient);
+Patient.hasMany(Payment);
+Payment.belongsTo(Service);
+Service.hasOne(Payment);
 
 module.exports = Payment;

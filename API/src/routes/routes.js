@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
+const { requireAuth } = require('../middleware/authentication.middleware');
+const { requireDocotorAuthorization } = require('../middleware/doctor.authorization.middleware');
+const { requireHospitalAuthorization } = require('../middleware/hospital.authorization.middleware');
+const { requireMinistryOfHealthAuthorization } = require('../middleware/ministryOfHealth.authorization.middleware');
+const { requirePatientAuthorization } = require('../middleware/patient.authorization.middleware');
+
 const { 
         registerDoctor, 
         loginDoctor, 
@@ -47,8 +53,8 @@ const {
 const { 
         createAppointment, 
         getAppointments, 
-        getAppointmentsByDate, 
-        getDoctorAppointments, 
+        getAppointmentsByDate,
+        getDoctorAppointments,
         getPatientAppointments, 
         updateAppointment, 
         deleteAppointment 
@@ -92,6 +98,7 @@ router.post('/doctor/register', registerDoctor);
 router.post('/doctor/login', loginDoctor);
 router.get('/doctor/:id', getDoctor);
 router.get('/doctors', getDoctors);
+
 router.put('/doctor/:id', updateDoctor);
 router.delete('/doctor/:id', deleteDoctor);
 
@@ -127,12 +134,12 @@ router.delete('/insuaranceCompany/:id', deleteInsuaranceCompany);
 
 //appointment routes
 router.get('/appointments', getAppointments);
-router.get('/appointments/:doctorId', getDoctorAppointments);
-router.get('/appointments/:patientId', getPatientAppointments);
 router.get('/appointments/:date', getAppointmentsByDate);
-router.post('/appointment', createAppointment);
-router.put('/appointment', updateAppointment);
-router.delete('/appointment', deleteAppointment);
+router.get('/appointments/doctor/:doctorId', getDoctorAppointments);
+router.get('/appointments/patient/:patientId', getPatientAppointments);
+router.post('/appointment/:doctorId/:patientId', createAppointment);
+router.put('/appointment/:id', updateAppointment);
+router.delete('/appointment/:id', deleteAppointment);
 
 //diagnosiis routes
 router.get('/diagnosis', getAllDiagnosis);
