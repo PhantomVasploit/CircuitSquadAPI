@@ -18,7 +18,7 @@
     "schemes": ["http", "https"],
     "paths": {
 
-        "/doctor/register": {
+        "/doctor/register/{hospitalId}": {
             "post": {
                 "tags": ["Doctor"],
                 "summary": "Creates a new doctor account",
@@ -27,6 +27,12 @@
                 "consumes": ["application/json"],
                 "produces": ["application/json"],
                 "parameters": [
+                    {
+                        "in": "path",
+                        "name": "hospitalId",
+                        "description": "Numeric ID of the hospital the doctor belongs to post",
+                        "required": true
+                    },
                     {
                         "in": "body",
                         "name": "body",
@@ -101,12 +107,50 @@
                     },
                     "500": {
                         "description": "Internal server error"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    },
+                    "511": {
+                        "description": "Authentications headers not set"
                     }
                 }
             }
         },
 
-        "/patient/register": {
+        "/doctor/{doctorId}": {
+            "get": {
+                "tags": ["Doctor"],
+                "summary": "Retrieves a specific doctor accounts details",
+                "operationId": "getADoctorAccount",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "path",
+                    "name": "doctorId",
+                    "description": "Numeric ID of the doctor account to get",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    },
+                    "511": {
+                        "description": "Authentications headers not set"
+                    }
+                }
+            }
+        },
+
+        "/patient/register/{}": {
             "post": {
                 "tags": ["Patient"],
                 "summary": "Creates a new patient account",

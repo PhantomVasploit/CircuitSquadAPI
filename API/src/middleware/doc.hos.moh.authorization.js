@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports.requirePatientAuthorization = (req, res, next)=>{
+module.exports.requireDocHosMOHAuthorization = (req, res, next)=>{
     try
     {
         const bearerHeader = req.headers['authorization'];
@@ -23,13 +23,20 @@ module.exports.requirePatientAuthorization = (req, res, next)=>{
                     {
                         return res.status(401).json({message: `Invalid authentication token: ${err.message}`});
                     }
-                    if(!decodedToken.isPatient)
+                    if(decodedToken.hasOwnProperty('isDoctor'))
                     {
-                        return res.status(401).json({message: 'Unauthorized to consume this resource'})
+                        return next();
+                    }
+                    else if(decodedToken.hasOwnProperty('isHospital'))
+                    {
+                        return next();
+                    }else if(decodedToken.hasOwnProperty('isMinistryOfHealth'))
+                    {
+                        return next();
                     }
                     else
                     {
-                        return next();
+                        return res.status(401).json({message: 'Unauthorized to consume this resource'});
                     }
                 })
             }

@@ -3,6 +3,7 @@ const { Sequelize, Model } = require('sequelize')
 
 const sequelize = require('../config/db.config');
 const Hospital = require('./Hospital.model');
+const InsuaranceCompany = require('./InsuranceCompany.model');
 
 
 class Patient extends Model{};
@@ -67,6 +68,13 @@ Patient.init({
             model: Hospital,
             key: 'id'
         }
+    },
+    insuranceCompanyId: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: InsuaranceCompany,
+            key: 'id'
+        }
     }
 },
 {
@@ -82,5 +90,7 @@ Patient.init({
 
 Patient.belongsTo(Hospital);
 Hospital.hasMany(Patient);
+Patient.belongsTo(InsuaranceCompany);
+InsuaranceCompany.hasMany(Patient);
 
 module.exports = Patient;

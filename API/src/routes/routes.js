@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { requireDocotorAuthorization } = require('../middleware/doctor.authorization.middleware');
+const { requireDoctorAuthorization } = require('../middleware/doctor.authorization.middleware');
 const { requireHospitalAuthorization } = require('../middleware/hospital.authorization.middleware');
 const { requireMinistryOfHealthAuthorization } = require('../middleware/ministryOfHealth.authorization.middleware');
 const { requirePatientAuthorization } = require('../middleware/patient.authorization.middleware');
+const { requireHospitalMOHAuthorization } = require('../middleware/hospital.moh.authorization');
+const { requireDocHosMOHAuthorization } = require('../middleware/doc.hos.moh.authorization');
+const { requireInsuaranceCompanyAuthorization } = require('../middleware/insuaranceCompany.authorization')
 
 const { 
         registerDoctor, 
@@ -63,6 +66,7 @@ const {
         createDiagnosis,
         getADiagnosis,
         getAllDiagnosis,
+        getPatientDiagnosis,
         updateDiagnosis,
         deleteDiagnosis
     } = require('../controller/diagnosis.controller');
@@ -93,41 +97,41 @@ const {
     } = require('../controller/service.controller');
 
 // doctor routes
-router.post('/doctor/register', registerDoctor);
+router.post('/doctor/register/:hospitalId', registerDoctor);
 router.post('/doctor/login', loginDoctor);
-router.get('/doctor/:id', getDoctor);
-router.get('/doctors', getDoctors);
-router.put('/doctor/:id', requireDocotorAuthorization, updateDoctor);
-router.delete('/doctor/:id', deleteDoctor);
+router.get('/doctor/:id', requireDocHosMOHAuthorization, getDoctor);
+router.get('/doctors', requireHospitalMOHAuthorization, getDoctors);
+router.put('/doctor/:id', requireDoctorAuthorization, updateDoctor);
+router.delete('/doctor/:id', requireHospitalMOHAuthorization, deleteDoctor);
 
 //hospital routes
 router.get('/hospitals', requireMinistryOfHealthAuthorization, getHospitals);
-router.get('/hospital/:id',  getHospital);
+router.get('/hospital/:id', requireMinistryOfHealthAuthorization, getHospital);
 router.post('/hospital/register/:ministryOfHealthId', registerHospital);
 router.post('/hospital/login', loginHospital);
 router.put('/hospital/:id', requireHospitalAuthorization, updateHospital);
 router.delete('/hospital/:id', requireMinistryOfHealthAuthorization, deleteHospital);
 
 //patient routes
-router.get('/patients', getPatients);
+router.get('/patients', requireDocHosMOHAuthorization, getPatients);
 router.get('/patient/:id', getPatient);
-router.post('/patient/register', registerPatient);
+router.post('/patient/register/:hospitalId/:insuranceCompanyId', registerPatient);
 router.post('/patient/login', loginPatient);
-router.put('/patient/:id', updatePatient);
-router.delete('/patient/:id', deletePatient);
+router.put('/patient/:id', requirePatientAuthorization, updatePatient);
+router.delete('/patient/:id', requireHospitalMOHAuthorization, deletePatient);
 
 //ministry of health routes
 router.post('/ministryOfHealth/register', registerMinistryOfHealth);
 router.post('/ministryOfHealth/login', loginMinistryOfHealth);
-router.put('/ministryOfHealth/:id', updateMinistryOfHealth);
-router.delete('/ministryOfHealth/:id', deleteMinistryOfHealth);
+router.put('/ministryOfHealth/:id', requireMinistryOfHealthAuthorization, updateMinistryOfHealth);
+router.delete('/ministryOfHealth/:id', requireMinistryOfHealthAuthorization, deleteMinistryOfHealth);
 
 //insuarance company routes
-router.get('/insuaranceCompany/:id', getInsuaranceCompany);
-router.get('/insuaranceCompanies', getInsuaranceCompanies);
+router.get('/insuaranceCompany/:id', requireHospitalMOHAuthorization, getInsuaranceCompany);
+router.get('/insuaranceCompanies', requireHospitalMOHAuthorization, getInsuaranceCompanies);
 router.post('/insuaranceCompany/register', registerInsuaranceCompany);
 router.post('/insuaranceCompany/login', loginInsuaranceCompany);
-router.put('/insuaranceCompany/:id', updateInsuaranceCompany);
+router.put('/insuaranceCompany/:id', requireInsuaranceCompanyAuthorization, updateInsuaranceCompany);
 router.delete('/insuaranceCompany/:id', deleteInsuaranceCompany);
 
 //appointment routes
@@ -142,29 +146,30 @@ router.delete('/appointment/:id', deleteAppointment);
 //diagnosiis routes
 router.get('/diagnosis', getAllDiagnosis);
 router.get('/diagnosis/:id', getADiagnosis);
-router.post('/diagnosis', createDiagnosis);
-router.put('/diagnosis/:id', updateDiagnosis);
-router.delete('/diagnosis/:id', deleteDiagnosis)
+router.get('/diagnosis/patient/:patientId', getPatientDiagnosis);
+router.post('/diagnosis/:patientId/:doctorId/:appointmentId', createDiagnosis);
+router.put('/diagnosis/:id', requireDocHosMOHAuthorization, updateDiagnosis);
+router.delete('/diagnosis/:id', requireHospitalMOHAuthorization, deleteDiagnosis)
 
 //medication routes
 router.get('/medications', getAllMedications);
 router.get('/medication/:id', getMedication);
-router.post('/medication', createMedication);
-router.put('/medication/:id', updateMedication);
-router.delete('/medication/:id', deleteMedication);
+router.post('/medication/:diagnosisId', createMedication);
+router.put('/medication/:id', requireDocHosMOHAuthorization, updateMedication);
+router.delete('/medication/:id', requireHospitalMOHAuthorization, deleteMedication);
 
 //payment routes
 router.get('/payments', getAllPayments);
 router.get('/payment/:id', getPayment);
-router.post('/payment', createPayment);
+router.post('/payment/:serviceId', createPayment);
 router.put('/payment/:id', updatePayment);
-router.delete('/payment/:id', deletePayment);
+router.delete('/payment/:id', requireHospitalMOHAuthorization, deletePayment);
 
 //services route
 router.get('/services', getServices);
 router.get('/service/:id', getService);
-router.post('/service', createService);
+router.post('/service/:appointmentId', createService);
 router.put('/service/:id', updateService);
-router.delete('/service/:id', deleteService);
+router.delete('/service/:id', requireHospitalMOHAuthorization, deleteService);
 
 module.exports = router;

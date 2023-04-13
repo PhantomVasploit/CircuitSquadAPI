@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
+const {Op} = require('sequelize');
 
 const Doctor = require('../models/Doctor.model');
 const { createToken } = require('../utils/token');
-const { Sequelize } = require('sequelize');
-const Appointment = require('../models/Appointment.model');
+const Hospital = require('../models/Hospital.model');
 
 
 module.exports.registerDoctor = (req, res)=>{
@@ -17,56 +17,87 @@ module.exports.registerDoctor = (req, res)=>{
         specialization, 
         password
     } = req.body;
-    Doctor.findOne({where: {email}})
-    .then((doctor)=>{
-        if(!doctor)
-        {
-            Doctor.create({firstName, lastName, email, phoneNumber, address, licenseNumber, specialization, password})
-            .then((doctor)=>{
-                const jwt = createToken({id: doctor.id, isDoctor: doctor.isDoctor});
-                res.status(201).json({message: 'Doctor account created successfully', doctor, jwt})
-            })
-            .catch((e)=>{
-                throw e;
-            })
-        }else{
-            res.status(400).json({message: 'The email provided is already registered. Please sign in instead.'})
-        }
-    })
-    .catch((e)=>{
-        throw e;
-    })
+    const hospitalId = req.params.hospitalId;
+
+    if(!firstName && !lastName && !email && !phoneNumber && !address && !licenseNumber && !specialization && !password)
+    {
+        res.status(400).json({message: 'Please provide all the doctor details in order to create the doctor account'})
+    }
+    else
+    {
+        Doctor.findOne({
+            where: {
+                [Op.or]: [ {phoneNumber}, {email}]
+            }
+        })
+        .then((registredDoctor)=>{
+            if(!registredDoctor)
+            {
+                Doctor.create({firstName, lastName, email, phoneNumber, address, licenseNumber, specialization, password, hospitalId})
+                .then((doctor)=>{
+                    const jwt = createToken({id: doctor.id, isDoctor: doctor.isDoctor});
+                    res.status(201).json({message: 'Doctor account created successfully', doctor, jwt})
+                })
+                .catch((e)=>{
+                    throw e;
+                })
+            }else{
+                res.status(400).json({message: 'The email or phone number provided is already registered. Please sign in instead.'})
+            }
+        })
+        .catch((e)=>{
+            throw e;
+        })
+    }
 }
 
 module.exports.loginDoctor = async(req, res)=>{
+    
+    console.log(req.body)
     const { email, password } = req.body;
-    try
+    
+    if(!email)
     {
-        const doctor = await Doctor.findOne({where: {email}});
-        if(!doctor)
+        res.status(400).json({message: 'Login credentials required'})
+    }
+    else
+    {
+        try
         {
-            res.status(400).json({message: 'Invalid login credentials'});
-        }else
-        {
-            const valid = await bcrypt.compare(password, doctor.password);
-            if(!valid)
+            const doctor = await Doctor.findOne({where: {email}});
+            if(!doctor)
             {
                 res.status(400).json({message: 'Invalid login credentials'});
             }else
             {
-                const jwt = createToken({id: doctor.id, isDoctor: doctor.isDoctor});
-                res.status(200).json({message: 'Login successful', jwt, doctor});
+                const valid = await bcrypt.compare(password, doctor.password);
+                if(!valid)
+                {
+                    res.status(400).json({message: 'Invalid login credentials'});
+                }else
+                {
+                    const jwt = createToken({id: doctor.id, isDoctor: doctor.isDoctor});
+                    res.status(200).json({message: 'Login successful', jwt, doctor});
+                }
             }
         }
-    }
-    catch(e){
-        throw e;
+        catch(e){
+            throw e;
+        }
     }
 }
 
 module.exports.getDoctor = (req, res)=>{
     const id = req.params.id;
-    Doctor.findByPk(id)
+    Doctor.findOne({ 
+        where: {id},
+        include: [{
+            model: Hospital,
+            required: true,
+            attributes: ['name', 'email', 'phoneNumber', 'address']
+        }],
+        attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'licenseNumber', 'specialization'] 
+    })
     .then((doctor)=>{
         if(!doctor)
         {
@@ -82,7 +113,14 @@ module.exports.getDoctor = (req, res)=>{
 }
 
 module.exports.getDoctors = (req, res)=>{
-    Doctor.findAll()
+    Doctor.findAll({
+        include: [{
+            model: Hospital,
+            required: true,
+            attributes: ['name', 'email', 'phoneNumber', 'address']
+        }],
+        attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'licenseNumber', 'specialization']
+    })
     .then((doctors)=>{
         res.status(200).json({message: 'Fetch successful', doctors});
     })

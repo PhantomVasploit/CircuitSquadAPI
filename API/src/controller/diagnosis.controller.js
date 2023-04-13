@@ -1,6 +1,10 @@
+const Appointment = require('../models/Appointment.model');
 const Diagnosis = require('../models/Diagnosis.model');
+const Doctor = require('../models/Doctor.model');
+const Patient = require('../models/Patient.model');
 
 module.exports.createDiagnosis = (req, res)=>{
+    
     const { 
         diagnosisType, 
         result, 
@@ -11,27 +15,59 @@ module.exports.createDiagnosis = (req, res)=>{
         urineAnalysis, 
         bloodGroup
      } = req.body;
+     const patientId = req.params.patientId;
+     const doctorId = req.params.doctorId;
+     const appointmentId = req.params.appointmentId;
 
-     Diagnosis.create({ 
-        diagnosisType, 
-        result, 
-        glucoseLevel, 
-        healthCondition, 
-        bloodPressure, 
-        bloodCount, 
-        urineAnalysis, 
-        bloodGroup
-     })
-     .then((diagnosis)=>{
-        res.status(201).json({message: 'Diagnosis created successfully', diagnosis});
-     })
-     .catch((e)=>{
-        throw e;
-     })
+     if(!diagnosisType && !result && !glucoseLevel && !healthCondition && !bloodPressure && !bloodCount && !urineAnalysis && !bloodGroup)
+     {
+        res.status(400).json({message: 'Please provide all the diagnosis fields needed to create the resource'})
+     }
+     else
+     {
+        Diagnosis.create({ 
+            diagnosisType, 
+            result, 
+            glucoseLevel, 
+            healthCondition, 
+            bloodPressure, 
+            bloodCount, 
+            urineAnalysis, 
+            bloodGroup,
+            patientId,
+            doctorId,
+            appointmentId
+         })
+         .then((diagnosis)=>{
+            res.status(201).json({message: 'Diagnosis created successfully', diagnosis});
+         })
+         .catch((e)=>{
+            throw e;
+         })
+     }
 }
 
 module.exports.getAllDiagnosis = (req, res)=>{
-    Diagnosis.findAll()
+    Diagnosis.findAll({
+        include: [
+            {
+                model: Doctor,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'licenseNumber', 'specialization']
+            },
+            {
+                model: Patient,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'dateOfBirth', 'gender', 'insuranceMembershipNumber', 'healthCondtion']
+            },
+            {
+                model: Appointment,
+                required: true,
+                attributes: ['date', 'notes', 'status']
+            }
+        ],
+        attributes: ['diagnosisType', 'glucoseLevel', 'healthCondition', 'bloodPressure', 'bloodCount', 'urineAnalysis', 'bloodGroup']
+    })
     .then((diagnosis)=>{
         res.status(200).json({message: 'Fetch successful', diagnosis});
     })
@@ -42,7 +78,53 @@ module.exports.getAllDiagnosis = (req, res)=>{
 
 module.exports.getADiagnosis = (req, res)=>{
     const id = req.params.id;
-    Diagnosis.findByPk(id)
+    Diagnosis.findOne({
+        where: {id},
+        include: [
+            {
+                model: Doctor,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'licenseNumber', 'specialization']
+            },
+            {
+                model: Patient,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'dateOfBirth', 'gender', 'insuranceMembershipNumber', 'healthCondtion']
+            },
+            {
+                model: Appointment,
+                required: true,
+                attributes: ['date', 'notes', 'status']
+            }
+        ],
+        attributes: ['diagnosisType', 'glucoseLevel', 'healthCondition', 'bloodPressure', 'bloodCount', 'urineAnalysis', 'bloodGroup']
+    })
+    .then((diagnosis)=>{
+        res.status(200).json({message: 'Fetch successful', diagnosis});
+    })
+    .catch((e)=>{
+        throw e;
+    })
+}
+
+module.exports.getPatientDiagnosis = (req, res)=>{
+    const patientId = req.params.patientId;
+    Diagnosis.findOne({
+        where: {patientId},
+        include: [
+            {
+                model: Doctor,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'licenseNumber', 'specialization']
+            },
+            {
+                model: Appointment,
+                required: true,
+                attributes: ['date', 'notes', 'status']
+            }
+        ],
+        attributes: ['diagnosisType', 'glucoseLevel', 'healthCondition', 'bloodPressure', 'bloodCount', 'urineAnalysis', 'bloodGroup']
+    })
     .then((diagnosis)=>{
         res.status(200).json({message: 'Fetch successful', diagnosis});
     })

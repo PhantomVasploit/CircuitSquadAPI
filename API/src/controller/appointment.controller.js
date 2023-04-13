@@ -4,22 +4,42 @@ const Patient = require('../models/Patient.model');
 
 
 module.exports.createAppointment = (req, res)=>{
+    
     const doctorId = req.params.doctorId;
     const patientId = req.params.patientId;
     const { date, notes, status } = req.body;
 
-    
-    Appointment.create({ date, notes, status, doctorId, patientId })
-    .then((appointment)=>{
-        res.status(201).json({message: 'Appointment created successfully', appointment});
-    })
-    .catch((e)=>{
-        throw e;
-    })
+    if(!date && !notes && !status)
+    {
+        res.status(400).json({message: 'Please provide the appointment fields needed to create the resource.'})
+    }else
+    {
+        Appointment.create({ date, notes, status, doctorId, patientId })
+        .then((appointment)=>{
+            res.status(201).json({message: 'Appointment created successfully', appointment});
+        })
+        .catch((e)=>{
+            throw e;
+        })
+    }
 }
 
 module.exports.getAppointments = (req, res)=>{
-    Appointment.findAll()
+    Appointment.findAll({
+        include: [
+            {
+                model: Patient,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'dateOfBirth', 'gender', 'insuranceMembershipNumber', 'healthCondtion']
+            },
+            {
+                model: Doctor,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'licenseNumber', 'specialization']
+            }
+        ],
+        attributes: ['date', 'notes', 'status']
+    })
     .then((appointments)=>{
         res.status(200).json({message: 'Fetch successful', appointments});
     })
@@ -44,10 +64,14 @@ module.exports.getDoctorAppointments = (req, res)=>{
     const doctorId = req.params.doctorId;
     Appointment.findAll({
         where: {doctorId},
-        include: [{
-            model: Patient,
-            required: true
-        }]
+        include: [
+            {
+                model: Patient,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'dateOfBirth', 'gender', 'insuranceMembershipNumber', 'healthCondtion']
+            }
+        ],
+        attributes: ['date', 'notes', 'status']
     })
     .then((appointments)=>{
         res.status(200).json({message: 'Fetch successful', appointments});
@@ -61,11 +85,21 @@ module.exports.getPatientAppointments = (req, res)=>{
     const patientId = req.params.patientId;
     Appointment.findAll({
         where: {patientId},
-        include: [{
-            model: Doctor,
-            required: true
-        }]
+        include: [ 
+            {
+                model: Doctor,
+                required: true,
+                attributes: ['firstName', 'lastName', 'email', 'phoneNumber', 'address', 'licenseNumber', 'specialization']
+            }
+        ],
+        attributes: ['date', 'notes', 'status']
     })
+    .then((appointments)=>{
+        res.status(200).json({message: 'Fetch successful', appointments});
+    })
+    .catch((e)=>{
+        throw e;
+    });
 }
 
 module.exports.updateAppointment = (req, res)=>{

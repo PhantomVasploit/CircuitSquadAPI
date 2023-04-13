@@ -73,8 +73,8 @@ Doctor.init({
     }
 });
     
-Doctor.belongsTo(Hospital);
 Hospital.hasMany(Doctor);
+Doctor.belongsTo(Hospital);
 
 module.exports = Doctor;
 

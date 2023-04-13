@@ -45,7 +45,7 @@ Service.init(
     },
     {
         sequelize,
-        modelName: 'serrvices'
+        modelName: 'services'
     }
 )
 

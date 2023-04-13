@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const {Op} = require('sequelize')
 
 const Hospital = require('../models/Hospital.model');
 const { createToken } = require('../utils/token');
@@ -15,33 +16,44 @@ module.exports.registerHospital = (req, res)=>{
 
      const ministryOfHealthId = req.params.ministryOfHealthId;
 
-     Hospital.findOne({ where: {email} })
-     .then((registeredHospital)=>{
-        if(!registeredHospital)
-        {
-            Hospital.create({
-                name,
-                email,
-                phoneNumber,
-                address,
-                password,
-                ministryOfHealthId
-            })
-            .then((hospital)=>{
-                const jwt = createToken({ id: hospital.id, isHospital: hospital.isHospital});
-                res.status(201).json({message: 'Hospital account created successfully', hospital, jwt});
-            })
-            .catch((e)=>{
-                throw e;
-            })
-        }else
-        {
-            res.status(400).json({message: 'The email provided is already registered. Please sign in instead.'});
-        }
-     })
-     .catch((e)=>{
-        throw e;
-     })
+     if(!name && !email && !phoneNumber && !address && !password)
+     {
+        res.status(400).json({message: 'Please provide all the hospital details in order to create the hospital account.'})
+     }
+     else
+     {
+        Hospital.findOne({ 
+            where: {
+                [Op.or]: [{email}, {phoneNumber}]
+            } 
+        })
+         .then((registeredHospital)=>{
+            if(!registeredHospital)
+            {
+                Hospital.create({
+                    name,
+                    email,
+                    phoneNumber,
+                    address,
+                    password,
+                    ministryOfHealthId
+                })
+                .then((hospital)=>{
+                    const jwt = createToken({ id: hospital.id, isHospital: hospital.isHospital});
+                    res.status(201).json({message: 'Hospital account created successfully', hospital, jwt});
+                })
+                .catch((e)=>{
+                    throw e;
+                })
+            }else
+            {
+                res.status(400).json({message: 'The email or phone number provided is already registered. Please sign in instead.'});
+            }
+         })
+         .catch((e)=>{
+            throw e;
+         })
+     }
 }
 
 
@@ -49,20 +61,27 @@ module.exports.loginHospital = async(req, res)=>{
     const { email, password } = req.body;
     try
     {
-        const hospital = await Hospital.findOne({where: {email}});
-        if(!hospital)
+        if(!email)
         {
-            res.status(400).json({message: 'Invalid login credentials'});
-        }else
+            res.status(400).json({message: 'Login credentials required'})
+        }
+        else
         {
-            const valid = await bcrypt.compare(password, hospital.password);
-            if(!valid)
+            const hospital = await Hospital.findOne({where: {email}});
+            if(!hospital)
             {
                 res.status(400).json({message: 'Invalid login credentials'});
             }else
             {
-                const jwt = createToken({id: hospital.id, isHospital: hospital.isHospital});
-                res.status(200).json({message: 'Login successful', hospital, jwt});
+                const valid = await bcrypt.compare(password, hospital.password);
+                if(!valid)
+                {
+                    res.status(400).json({message: 'Invalid login credentials'});
+                }else
+                {
+                    const jwt = createToken({id: hospital.id, isHospital: hospital.isHospital});
+                    res.status(200).json({message: 'Login successful', hospital, jwt});
+                }
             }
         }
     }
