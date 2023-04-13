@@ -18,6 +18,479 @@
     "schemes": ["http", "https"],
     "paths": {
 
+        "/ministryOfHealth/register": {
+            "post": {
+                "tags": ["Ministry Of Health"],
+                "summary": "Creates a new ministry of health account",
+                "description": "Takes ministry's details in json format and creates a ministry of health instance in the database",
+                "operationId": "newMinistryOfHealthAccount",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Ministry Of health object that needs to be added to the database",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MinistryOfHealth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Account already exits."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+
+        "/ministryOfHealth/login": {
+            "post": {
+                "tags": ["Ministry Of Health"],
+                "summary": "Allows ministry of health to consume protected API endpoints by autheticating them and providing them an authentication and authorization token",
+                "operationId": "LoginMinistryOfHealth",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Patient's login credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MinistryOfHealthCredetials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Incorrect login credentials or unregistered email address."
+                    }
+                }
+            }
+        },
+
+        "/ministryOfHealth/{id}": {
+            "put": {
+                "tags": ["Ministry Of Health"],
+                "summary": "Updates a specific ministry Of health accounts details. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "UpdateMinistryOfHealthAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the ministry of health account account to update",
+                        "required": true
+                     },
+                     {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Ministry of health's fields details to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateMinistryOfHealth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            },
+
+            "delete": {
+                "tags": ["Ministry Of Health"],
+                "summary": "Deletes a specific doctor account. The account is specified by the id. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "deleteADoctorAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the ministry of health account to delete",
+                        "required": true
+                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            }
+
+        },
+
+        "/hospital/register/{ministryOfHealthId}": {
+            "post": {
+                "tags": ["Hospital"],
+                "summary": "Creates a new hospital account",
+                "description": "Takes hospital details in json format and creates a ministry of health instance in the database",
+                "operationId": "NewHospitalAccount",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ministryOfHealthId",
+                        "description": "Numeric ID of the ministry of health governing the hospital",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Ministry Of health object that needs to be added to the database",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Hospital"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Account already exits."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+
+        "/hospital/login": {
+            "post": {
+                "tags": ["Hospital"],
+                "summary": "Allows hospital to consume protected API endpoints by autheticating them and providing them an authentication and authorization token",
+                "operationId": "LoginHospital",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Patient's login credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/HospitalLoginCredentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Incorrect login credentials or unregistered email address."
+                    }
+                }
+            }
+        },
+
+        "/hospital/{id}": {
+            "get": {
+                "tags": ["Hospital"],
+                "summary": "Retrieves a specific hospital accounts details. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "GetAHospitalAccount",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "path",
+                    "name": "id",
+                    "description": "Numeric ID of the hosptial account to get",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            },
+
+            "put": {
+                "tags": ["Hospital"],
+                "summary": "Updates a specific hospital accounts details. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "UpdateAHospitalAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the hospital account to update",
+                        "required": true
+                     },
+                     {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Hospital's fields details to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateHospital"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            },
+
+            "delete": {
+                "tags": ["Hospital"],
+                "summary": "Deletes a specific hospital account. The account is specified by the id. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "DeleteAHospitalAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the hospital account to delete",
+                        "required": true
+                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            }
+
+        },
+
+        "/insuaranceCompany/register": {
+            "post": {
+                "tags": ["Insurance Company"],
+                "summary": "Creates a new insurance company account",
+                "description": "Takes insurance company's details in json format and creates a insurance company instance in the database",
+                "operationId": "NewInsuranceCompanyAccount",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Ministry Of health object that needs to be added to the database",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/InsuranceCompany"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Account already exits."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+
+        "/insuaranceCompany/login": {
+            "post": {
+                "tags": ["Insurance Company"],
+                "summary": "Allows insurance company to consume protected API endpoints by autheticating them and providing them an authentication and authorization token",
+                "operationId": "LoginInsuranceCompany",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Insurance company's login credentials",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/InsuranceCompanyLoginCredentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid operation: Incorrect login credentials or unregistered email address."
+                    }
+                }
+            }
+        },
+
+        "/insuaranceCompany/{id}": {
+            "get": {
+                "tags": ["Insurance Company"],
+                "summary": "Retrieves a specific insurance company accounts details. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "GetAnInsuranceAccount",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "path",
+                    "name": "id",
+                    "description": "Numeric ID of the hosptial account to get",
+                    "required": true
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Insurance Company"],
+                "summary": "Updates a specific insurance company accounts details. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "UpdateInsuranceCompanyAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the insurance company account account to update",
+                        "required": true
+                     },
+                     {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Insurance company's fields details to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateInsuranceCompany"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            },
+
+            "delete": {
+                "tags": ["Insurance Company"],
+                "summary": "Deletes a specific insurance company account. The account is specified by the id. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "DeleteAnInsuranceCompanyAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the insurance company account to delete",
+                        "required": true
+                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            }
+
+        },
+
         "/doctor/register/{hospitalId}": {
             "post": {
                 "tags": ["Doctor"],
@@ -63,7 +536,7 @@
         "/doctor/login": {
             "post": {
                 "tags": ["Doctor"],
-                "summary": "Allows doctor to consume authorized API endpoints",
+                "summary": "Allows doctor to consume protected API endpoints by autheticating them and providing them an authentication and authorization token",
                 "operationId": "loginDoctor",
                 "consumes": ["application/json"],
                 "produces": ["application/json"],
@@ -95,7 +568,7 @@
         "/doctors": {
             "get": {
                 "tags": ["Doctor"],
-                "summary": "Retrieves all doctor accounts details",
+                "summary": "Retrieves all doctor accounts details. This endpoint is protected hence request will not be served unless authorized.",
                 "operationId": "getDoctorAccounts",
                 "produces": ["application/json"],
                 "responses": {
@@ -121,7 +594,7 @@
         "/doctor/{doctorId}": {
             "get": {
                 "tags": ["Doctor"],
-                "summary": "Retrieves a specific doctor accounts details",
+                "summary": "Retrieves a specific doctor accounts details. This endpoint is protected hence request will not be served unless authorized.",
                 "operationId": "getADoctorAccount",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -140,17 +613,82 @@
                     "500": {
                         "description": "Internal server error"
                     },
-                    "403": {
+                    "401": {
                         "description": "User not authorized"
+                    }
+                }
+            },
+
+            "put": {
+                "tags": ["Doctor"],
+                "summary": "Updates a specific doctor accounts details. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "updateADoctorAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "doctorId",
+                        "description": "Numeric ID of the doctor account to update",
+                        "required": true
+                     },
+                     {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Doctor's fields details to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateDoctorDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
                     },
-                    "511": {
-                        "description": "Authentications headers not set"
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            },
+
+            "delete": {
+                "tags": ["Doctor"],
+                "summary": "Deletes a specific doctor account. The account is specified by the id. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "deleteADoctorAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "doctorId",
+                        "description": "Numeric ID of the doctor account to delete",
+                        "required": true
+                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
                     }
                 }
             }
+
         },
 
-        "/patient/register/{}": {
+        "/patient/register/{hospitalId}/{insuranceCompanyId}": {
             "post": {
                 "tags": ["Patient"],
                 "summary": "Creates a new patient account",
@@ -160,9 +698,21 @@
                 "produces": ["application/json"],
                 "parameters": [
                     {
+                        "in": "path",
+                        "name": "hospitalId",
+                        "description": "Numeric ID of the hospital the patient belongs to",
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "insuranceCompanyId",
+                        "description": "Numeric ID of the insurance company that offer health insuarance to the patient",
+                        "required": true
+                    },
+                    {
                         "in": "body",
                         "name": "body",
-                        "description": "Patient object that needs to be added to the database",
+                        "description": "Patient object that needs to be created to the database",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/Patient"
@@ -185,10 +735,11 @@
                 }
             }
         },
+
         "/patient/login": {
             "post": {
                 "tags": ["Patient"],
-                "summary": "Allows patient to consume authorized API endpoints",
+                "summary": "Allows patient to consume protected API endpoints by autheticating them and providing them an authentication and authorization token",
                 "operationId": "LoginPatient",
                 "consumes": ["application/json"],
                 "produces": ["application/json"],
@@ -220,7 +771,7 @@
         "/patients": {
             "get": {
                 "tags": ["Patient"],
-                "summary": "Retrieves all patient accounts details",
+                "summary": "Retrieves all patient accounts details. This endpoint is protected hence request will not be served unless authorized.",
                 "operationId": "getPatientAccounts",
                 "produces": ["application/json"],
                 "responses": {
@@ -232,10 +783,111 @@
                     },
                     "500": {
                         "description": "Internal server error"
+                    },
+                    "401":{
+                        "description": "User not authorized"
+                    }
+                }
+            }
+        },
+
+        "/patients/{id}": {
+            "get": {
+                "tags": ["Patient"],
+                "summary": "Retrieves a patient accounts details. The account to be fetched is specified by the id",
+                "operationId": "getAPatientAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the patient to get",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401":{
+                        "description": "User not authorized"
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Patient"],
+                "summary": "Updates a specific patient accounts details. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "updateAPatientAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the patient account to update",
+                        "required": true
+                     },
+                     {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Patient's fields details to update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdatePatientDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
+                    }
+                }
+            },
+
+            "delete": {
+                "tags": ["Patient"],
+                "summary": "Deletes a specific patient account. The account is specified by the id. This endpoint is protected hence request will not be served unless authorized.",
+                "operationId": "deleteAPatientAccount",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Numeric ID of the patient account to delete",
+                        "required": true
+                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },
+                    "401": {
+                        "description": "User not authorized"
                     }
                 }
             }
         }
+
     },
     "definitions": {
 
@@ -254,6 +906,128 @@
                 }
             }
         },
+
+        "MinistryOfHealth": {
+            "type": "object",
+            "required": ["name","email", "phoneNumber", "address","password"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated ministry of health's identification number",
+                    "uniqueItems": true,
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "This is the ministry of health's name",
+                    "example": "Ministry Of Health Office"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the ministry of health's email address",
+                    "uniqueItems": true,
+                    "example": "moh@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "This is the ministry of health's passkey that would be used during authentication process",
+                    "example": "abc1234"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the ministry of health's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255894"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the doctor's residential address",
+                    "example": "MSA 80107"                    
+                } 
+            }
+        },
+
+
+        "InsuranceCompany": {
+            "type": "object",
+            "required": ["name","email", "phoneNumber", "address","password"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated Insurance company's identification number",
+                    "uniqueItems": true,
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "This is the ministry of Insurance company's name",
+                    "example": "Jubilee"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the Insurance company's email address",
+                    "uniqueItems": true,
+                    "example": "jubilee@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "This is the ministry of Insurance company's passkey that would be used during authentication process",
+                    "example": "abc1234"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the ministry of Insurance company's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255894"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the Insurance company's residential address",
+                    "example": "MSA 80107"                    
+                } 
+            }
+        },
+
+        "Hospital": {
+            "type": "object",
+            "required": ["name","email", "phoneNumber", "address","password"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated hospital's identification number",
+                    "uniqueItems": true,
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "This is the hospital's first name",
+                    "example": "Jocham"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the hospital's email address",
+                    "uniqueItems": true,
+                    "example": "jocham@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "This is the hospital's passkey that would be used during authentication process",
+                    "example": "abc1234"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the hospital's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255893"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the hospital's residential address",
+                    "example": "MSA 80107"                    
+                } 
+            }
+        },
+
 
         "Doctor": {
             "type": "object",
@@ -374,6 +1148,171 @@
             }
         },
 
+        "UpdateMinistryOfHealth": {
+            "type": "object",
+            "required": ["name","email", "phoneNumber", "address"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated ministry of health's identification number",
+                    "uniqueItems": true,
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "This is the ministry of health's name",
+                    "example": "Ministry Of Health Officer"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the ministry of health's email address",
+                    "uniqueItems": true,
+                    "example": "moh.go.ke"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the ministry of health's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255895"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the ministry of health's residential address",
+                    "example": "MSA 80108"                    
+                } 
+            }
+        },
+
+        "UpdateInsuranceCompany": {
+            "type": "object",
+            "required": ["name","email", "phoneNumber", "address"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated Insurance company's identification number",
+                    "uniqueItems": true,
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "This is the ministry of Insurance company's name",
+                    "example": "Old Mutual"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the Insurance company's email address",
+                    "uniqueItems": true,
+                    "example": "old_mutual@gmail.com"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the ministry of Insurance company's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255897"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the Insurance company's residential address",
+                    "example": "MSA 80207"                    
+                } 
+            }
+        },
+
+        "UpdateHospital": {
+            "type": "object",
+            "required": ["name","email", "phoneNumber", "address"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated hospital's identification number",
+                    "uniqueItems": true,
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "This is the hospital's name",
+                    "example": "Premier Hospital"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the hospital's email address",
+                    "uniqueItems": true,
+                    "example": "premier_hospital.go.ke"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the hospital's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255897"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the hospital's residential address",
+                    "example": "MSA 80208"                    
+                } 
+            }
+        },
+
+        "UpdatePatientDetails": {
+            "type": "object",
+            "required": ["firstName", "lastName", "email", "phoneNumber", "address", "dateOfBirth", "gender", "healthCondtion", "insuranceMembershipNumber"],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "This is an auto-generated doctor's identification number",
+                    "uniqueItems": true,
+                    "example": "47"
+                },
+                "firstName": {
+                    "type": "string",
+                    "description": "This is the patient's first name",
+                    "example": "Jack"
+                },
+                "lastName": {
+                    "type": "string",
+                    "description": "This is the patient's last name",
+                    "example": "Reacher"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "This is the patient's email address",
+                    "uniqueItems": true,
+                    "example": "reacher@gmail.com"
+                },
+                "phoneNumber": {
+                    "type": "string",
+                    "description": "This is the patient's phone number",
+                    "uniqueItems": true,
+                    "example": "+254757255894"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "This is the patient's residential address",
+                    "example": "MSA 80107"                    
+                },
+                "dateOfBirth": {
+                    "type": "date",
+                    "description": "This is the patient's date of birth",
+                    "example": "1999-07-22"
+                },
+                "gender": {
+                    "type": "string",
+                    "description": "This is the patient's gender",
+                    "example": "Male"
+                },
+                "healthCondtion": {
+                    "type": "string",
+                    "description": "This is the patient's health condition",
+                    "example": "Diabetic"
+                },
+                "insuranceMembershipNumber": {
+                    "type": "string",
+                    "description": "This is the patient's insurance membership number",
+                    "example": "B14/03150/21"
+                }  
+            }
+        },
+
         "UpdateDoctorDetails": {
             "type": "object",
             "properties": {
@@ -445,16 +1384,58 @@
                 "example": "abc1234"
               }
             }
-        }
-    },
-    "parameters": {
-        "idParam": {
-            "name": "id",
-            "in": "path",
-            "description": "ID of doctor account",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
+        },
+        "MinistryOfHealthCredetials":{
+            "type": "object",
+            "required": ["email", "password"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "This is the ministry of health's email address",
+                "uniqueItems": true,
+                "example": "moh@gmail.com"
+              },
+              "password": {
+                "type": "string",
+                "description": "This is the ministry of health's passkey that would be used during authentication process",
+                "example": "abc1234"
+              }
+            }
+        },
+        "HospitalLoginCredentials":{
+            "type": "object",
+            "required": ["email", "password"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "This is the hsopital's email address",
+                "uniqueItems": true,
+                "example": "jocham@gmail.com"
+              },
+              "password": {
+                "type": "string",
+                "description": "This is the hospital's passkey that would be used during authentication process",
+                "example": "abc1234"
+              }
+            }
+        },
+
+        "InsuranceCompanyLoginCredentials":{
+            "type": "object",
+            "required": ["email", "password"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "This is the insurance company's email address",
+                "uniqueItems": true,
+                "example": "jubilee@gmail.com"
+              },
+              "password": {
+                "type": "string",
+                "description": "This is the insurance company's passkey that would be used during authentication process",
+                "example": "abc1234"
+              }
+            }
         }
     }
 }

@@ -52,8 +52,6 @@ module.exports.registerDoctor = (req, res)=>{
 }
 
 module.exports.loginDoctor = async(req, res)=>{
-    
-    console.log(req.body)
     const { email, password } = req.body;
     
     if(!email)

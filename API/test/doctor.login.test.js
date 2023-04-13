@@ -1,16 +1,16 @@
 const request = require('supertest');
 
+require('dotenv').config();
 let server;
-let db;
-const Doctor = require('../src/models/Doctor.model');
 
+const Doctor = require('../src/models/Doctor.model');
+let db = require('../src/config/db.config');
 
 describe('Doctor Login API end point: /nhis/api/doctor/login', ()=>{
 
     beforeEach(async()=>{
-        server = require('../src/app');
-        db = require('../src/config/db.config');
-        
+        await db.sync({force: true});
+        server = require('../src/app');        
     });
 
     afterEach(async()=>{
