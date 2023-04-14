@@ -16,10 +16,6 @@ module.exports = {
                 type: Sequelize.STRING(255),
                 allowNull: false
             },
-            date: {
-                type: Sequelize.DATE,
-                allowNull: false
-            },
             amount: {
                 type: Sequelize.INTEGER,
                 allowNull: false

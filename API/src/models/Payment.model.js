@@ -20,10 +20,6 @@ Payment.init(
             type: Sequelize.DATE,
             allowNull: false
         },
-        amount: {
-            type: Sequelize.INTEGER,
-            allowNull: false
-        },
         status: {
             type: Sequelize.BOOLEAN,
             allowNull: false,

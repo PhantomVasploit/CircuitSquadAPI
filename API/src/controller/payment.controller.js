@@ -5,7 +5,7 @@ const Payment = require('../models/Payment.model');
 const Service = require('../models/Service.model');
 
 module.exports.createPayment = (req, res)=>{
-    const { paymentMethod, date, amount } = req.body;
+    const { paymentMethod, date,  status } = req.body;
     const serviceId = req.params.serviceId;
     if(!paymentMethod && !date && !amount)
     {
@@ -13,7 +13,7 @@ module.exports.createPayment = (req, res)=>{
     }
     else
     {
-        Payment.create({ paymentMethod, date, amount, serviceId })
+        Payment.create({ paymentMethod, date, serviceId, status })
         .then((medication)=>{
             res.status(201).json({message: 'Payment created successfully', medication})
         })
