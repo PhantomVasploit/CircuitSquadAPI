@@ -46,20 +46,6 @@ Diagnosis.init(
             type: Sequelize.STRING(255),
             allowNull: false
         },
-        patientId: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: Patient,
-                key: 'id'
-            }
-        },
-        doctorId: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: Doctor,
-                key: 'id'
-            }
-        },
         appointmentId: {
             type: Sequelize.INTEGER,
             references: {

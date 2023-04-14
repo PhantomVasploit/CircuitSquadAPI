@@ -81,7 +81,8 @@ const {
     } = require('../controller/medication.controller'); 
 
 const {
-    createPayment,
+    createServicePayment,
+    createMedicationPayment,
     getAllPayments,
     getPayment,
     updatePayment,
@@ -161,7 +162,8 @@ router.delete('/medication/:id', requireHospitalMOHAuthorization, deleteMedicati
 //payment routes
 router.get('/payments', getAllPayments);
 router.get('/payment/:id', getPayment);
-router.post('/payment/:serviceId', createPayment);
+router.post('/payment/:serviceId', createServicePayment);
+router.post('/payment/:medicationId', createMedicationPayment);
 router.put('/payment/:id', updatePayment);
 router.delete('/payment/:id', requireHospitalMOHAuthorization, deletePayment);
 

@@ -1,7 +1,8 @@
 const { Sequelize, Model } = require("sequelize");
+
 const sequelize = require("../config/db.config");
-const Patient = require("./Patient.model");
 const Service = require("./Service.model");
+const Medication = require("./Medication.model");
 
 class Payment extends Model{};
 Payment.init(
@@ -25,17 +26,17 @@ Payment.init(
             allowNull: false,
             defaultValue: false
         },
-        patientId: {
-            type: Sequelize.INTEGER,
-            references: {
-                model: Patient,
-                key: 'id'
-            }
-        },
         serviceId: {
             type: Sequelize.INTEGER,
             references: {
                 model: Service,
+                key: 'id'
+            }
+        },
+        medicationId: {
+            type: Sequelize.INTEGER,
+            references: {
+                model: Medication,
                 key: 'id'
             }
         }
@@ -47,9 +48,9 @@ Payment.init(
     }
 )
 
-Payment.belongsTo(Patient);
-Patient.hasMany(Payment);
 Payment.belongsTo(Service);
 Service.hasOne(Payment);
+Payment.belongsTo(Medication);
+Medication.hasMany(Payment);
 
 module.exports = Payment;
