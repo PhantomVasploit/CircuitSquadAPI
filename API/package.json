@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon src/app.js",
-    "start": "node src/app.js",
-    "test": "jest --watchAll --verbose --detectOpenHandles"
+    "start": "node src/app.js"
   },
   "author": "PaulSanga",
   "license": "ISC",
