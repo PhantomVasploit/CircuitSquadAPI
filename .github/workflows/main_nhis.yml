@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.5.1
+      - uses: actions/checkout@v2.x
         with:
-          ref: v2.5.1
+          ref: v2.x
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v2.x
         with:
           node-version: '18.x'
 
