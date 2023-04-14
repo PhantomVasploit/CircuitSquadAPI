@@ -14,7 +14,7 @@
         }
     },
     "host": "127.0.0.1:3000",
-    "basePath": "/nhis/api/",
+    "basePath": "nhis.azurewebsites.net/nhis/api/",
     "schemes": ["http", "https"],
     "paths": {
 
