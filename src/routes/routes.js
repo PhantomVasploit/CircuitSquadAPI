@@ -14,7 +14,8 @@ const {
         loginDoctor, 
         getDoctor, 
         getDoctors, 
-        updateDoctor, 
+        updateDoctor,
+        assignHospital, 
         deleteDoctor 
     } = require('../controller/doctor.controller');
 
@@ -23,6 +24,7 @@ const {
         loginHospital, 
         getHospital, 
         getHospitals, 
+        assignMinistryOfHealth,
         updateHospital, 
         deleteHospital 
     } = require('../controller/hospital.controller');
@@ -31,7 +33,8 @@ const {
         registerPatient, 
         loginPatient, 
         getPatient, 
-        getPatients, 
+        getPatients,
+        assignHopsitalAndInsurance, 
         updatePatient, 
         deletePatient 
     } = require('../controller/patient.controller');
@@ -98,7 +101,8 @@ const {
     } = require('../controller/service.controller');
 
 // doctor routes
-router.post('/doctor/register/:hospitalId', registerDoctor);
+router.post('/doctor/register', registerDoctor);
+router.post('/doctor/:id/:hospitalId', assignHospital);
 router.post('/doctor/login', loginDoctor);
 router.get('/doctor/:id', requireDocHosMOHAuthorization, getDoctor);
 router.get('/doctors', requireHospitalMOHAuthorization, getDoctors);
@@ -108,7 +112,8 @@ router.delete('/doctor/:id', requireHospitalMOHAuthorization, deleteDoctor);
 //hospital routes
 router.get('/hospitals', requireMinistryOfHealthAuthorization, getHospitals);
 router.get('/hospital/:id', requireMinistryOfHealthAuthorization, getHospital);
-router.post('/hospital/register/:ministryOfHealthId', registerHospital);
+router.post('/hospital/register', registerHospital);
+router.post('/hospital/:id/:ministryOfHealthId', assignMinistryOfHealth);
 router.post('/hospital/login', loginHospital);
 router.put('/hospital/:id', requireHospitalAuthorization, updateHospital);
 router.delete('/hospital/:id', requireMinistryOfHealthAuthorization, deleteHospital);
@@ -116,7 +121,8 @@ router.delete('/hospital/:id', requireMinistryOfHealthAuthorization, deleteHospi
 //patient routes
 router.get('/patients', requireDocHosMOHAuthorization, getPatients);
 router.get('/patient/:id', getPatient);
-router.post('/patient/register/:hospitalId/:insuranceCompanyId', registerPatient);
+router.post('/patient/register', registerPatient);
+router.post('/patient/:id/:hospitalId/:insuranceCompanyId', assignHopsitalAndInsurance);
 router.post('/patient/login', loginPatient);
 router.put('/patient/:id', requirePatientAuthorization, updatePatient);
 router.delete('/patient/:id', requireHospitalMOHAuthorization, deletePatient);
