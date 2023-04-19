@@ -12,7 +12,7 @@ const errorLogger = require('./middleware/errorLogger');
 const swaggerDoc = require('./config/swager.json');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 require('./config/db.config');
 
 
