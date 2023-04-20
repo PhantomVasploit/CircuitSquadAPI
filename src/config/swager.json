@@ -13,8 +13,8 @@
             "url": "https://opensource.org/licenses/MIT"
         }
     },
-    "host": "127.0.0.1:3000",
-    "basePath": "nhis.azurewebsites.net/api/",
+    "host": "nhis.azurewebsites.net",
+    "basePath": "api/",
     "schemes": ["https"],
     "paths": {
 
