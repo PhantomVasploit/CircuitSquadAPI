@@ -166,12 +166,6 @@
                 "produces": ["application/json"],
                 "parameters": [
                     {
-                        "in": "path",
-                        "name": "ministryOfHealthId",
-                        "description": "Numeric ID of the ministry of health governing the hospital",
-                        "required": true
-                    },
-                    {
                         "in": "body",
                         "name": "body",
                         "description": "Ministry Of health object that needs to be added to the database",
