@@ -14,7 +14,7 @@
         }
     },
     "host": "nhis.azurewebsites.net",
-    "basePath": "api/",
+    "basePath": "/api/",
     "schemes": ["https"],
     "paths": {
 
